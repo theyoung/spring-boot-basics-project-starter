@@ -79,7 +79,9 @@
                                         <td>
                                             <button type="button" class="btn btn-success"
                                                     th:attr="onclick=|showNoteModal(${note.getNoteId()},'${note.getNoteTitle()}','${note.getNoteDescription()}')|"                                            >Edit</button>
-                                            <a class="btn btn-danger">Delete</a>
+                                            <a class="btn btn-danger"
+                                                    th:attr="href=|/deletenote/${note.getNoteId()}|"
+                                            >Delete</a>
                                         </td>
                                         <th scope="row" th:text="${note.getNoteTitle()}">Example Note Title</th>
                                         <td th:text="${note.getNoteDescription()}">Example Note Description </td>
@@ -135,14 +137,18 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
+                                <tr th:each="credential : ${credentials}">
                                     <td>
-                                        <button type="button" class="btn btn-success">Edit</button>
-                                        <a class="btn btn-danger">Delete</a>
+                                        <button type="button" class="btn btn-success"
+                                                th:attr="onclick=|showCredentialModal(${credential.getCredentialId()},'${credential.getUrl()}','${credential.getUserName()}','${credential.getPassword()}')|"
+                                        >Edit</button>
+                                        <a class="btn btn-danger"
+                                           th:attr="href=|/deletecredential/${credential.getCredentialId()}|"
+                                           >Delete</a>
                                     </td>
-                                    <th scope="row">Example Credential URL</th>
-                                    <td>Example Credential Username</td>
-                                    <td>Example Credential Password</td>
+                                    <th scope="row" th:text="${credential.getUrl()}">Example Credential URL</th>
+                                    <td th:text="${credential.getUserName()}">Example Credential Username</td>
+                                    <td th:text="${credential.getPassword()}">Example Credential Password</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -158,7 +164,7 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="#" method="POST">
+                                        <form action="#" method="POST" th:action="@{/addcredential}">
                                             <input type="hidden" name="credentialId" id="credential-id">
                                             <div class="form-group">
                                                 <label for="credential-url" class="col-form-label">URL</label>
@@ -166,7 +172,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="credential-username" class="col-form-label">Username</label>
-                                                <input type="text" name= "username" class="form-control" id="credential-username" maxlength="30" required>
+                                                <input type="text" name= "userName" class="form-control" id="credential-username" maxlength="30" required>
                                             </div>
                                             <div class="form-group">
                                                 <label for="credential-password" class="col-form-label">Password</label>

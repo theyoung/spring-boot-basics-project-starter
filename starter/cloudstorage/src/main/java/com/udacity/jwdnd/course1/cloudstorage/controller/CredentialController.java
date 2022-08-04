@@ -3,6 +3,7 @@ package com.udacity.jwdnd.course1.cloudstorage.controller;
 import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
 import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
+import com.udacity.jwdnd.course1.cloudstorage.services.CredentialService;
 import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
 import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
 import org.springframework.security.core.Authentication;
@@ -13,18 +14,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
-public class NoteController {
-    public final UserService userService;
-    public final NoteService noteService;
+public class CredentialController {
 
-    public NoteController(UserService userService, NoteService noteService) {
+    public final UserService userService;
+    public final CredentialService credentialService;
+
+    public CredentialController(UserService userService, CredentialService credentialService) {
         this.userService = userService;
-        this.noteService = noteService;
+        this.credentialService = credentialService;
     }
 
-    @GetMapping("/deletenote/{noteId}")
-    public String deleteNote(@PathVariable String noteId, Model model){
-        int result = noteService.deleteNote(noteId);
+    @GetMapping("/deletecredential/{credentialId}")
+    public String deleteCredential(@PathVariable String credentialId, Model model){
+
+        int result = credentialService.deleteCredential(credentialId);
 
         if(result == 1){
             model.addAttribute("success", true);
@@ -35,8 +38,8 @@ public class NoteController {
         return "result";
     }
 
-    @PostMapping("/addnote")
-    public String doNote(Authentication authentication,Note note, Model model){
+    @PostMapping("/addcredential")
+    public String doCredential(Authentication authentication, Credential credential, Model model){
         int result = 0;
 
         String name = authentication.getName();
@@ -46,13 +49,13 @@ public class NoteController {
             model.addAttribute("errMessage", true);
             return "result";
         } else {
-            note.setUserId(user.getUserId());
+            credential.setUserId(user.getUserId());
         }
 
-        if(note.getNoteId() == null){
-            result = noteService.addNote(note);
+        if(credential.getCredentialId() == null){
+            result = credentialService.addCredential(credential);
         } else {
-            result = noteService.updateNote(note);
+            result = credentialService.updateCredential(credential);
         }
 
         if(result != 0){
@@ -63,6 +66,5 @@ public class NoteController {
 
         return "result";
     }
-
 
 }
