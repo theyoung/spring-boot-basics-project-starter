@@ -22,7 +22,7 @@ public class CloudStorageApplication implements ApplicationRunner {
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		User a = new User(null, "a", "a", "a", "a", "a");
-		this.userService.createUser(a);
+//		User a = new User(null, "a", "a", "a", "a", "a");
+//		this.userService.createUser(a);
 	}
 }
