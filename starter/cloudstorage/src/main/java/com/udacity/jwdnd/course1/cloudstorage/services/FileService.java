@@ -21,8 +21,8 @@ public class FileService {
         return fileMapper.insertFile(file);
     }
 
-    public List<File> getFiles(){
-        return fileMapper.getFiles();
+    public List<File> getFiles(int userId){
+        return fileMapper.getFiles(userId);
     }
 
     public int deleteFile(String fileId) {
@@ -31,5 +31,9 @@ public class FileService {
 
     public File findFileById(String fileId){
         return fileMapper.findFileById(fileId);
+    }
+
+    public File findFileByName(String fileName){
+        return fileMapper.findFileByName(fileName);
     }
 }

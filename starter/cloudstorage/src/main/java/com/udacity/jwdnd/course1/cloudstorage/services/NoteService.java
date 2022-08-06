@@ -24,8 +24,8 @@ public class NoteService {
         return noteMapper.updateNote(note);
     }
 
-    public List<Note> getNotes(){
-        return noteMapper.getNotes();
+    public List<Note> getNotes(int userId){
+        return noteMapper.getNotes(userId);
     }
 
     public int deleteNote(Note note){

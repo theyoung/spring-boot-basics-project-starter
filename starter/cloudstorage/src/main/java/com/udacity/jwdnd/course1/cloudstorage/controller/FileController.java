@@ -50,6 +50,12 @@ public class FileController {
         String name = authentication.getName();
         User user = userService.getUser(name);
 
+
+        if(fileService.findFileByName(upLoadedFile.getOriginalFilename()) != null){
+            model.addAttribute("errMessage", "Redundancy File Name");
+            return "result";
+        }
+
         File file = new File();
         file.setFileName(upLoadedFile.getOriginalFilename());
         file.setFileSize(String.valueOf(upLoadedFile.getSize()));
@@ -57,7 +63,7 @@ public class FileController {
         file.setFiledata(upLoadedFile.getBytes());
 
         if(user == null){
-            model.addAttribute("errMessage", true);
+            model.addAttribute("errMessage", "User Information Null");
             return "result";
         } else {
             file.setUserId(user.getUserId());
