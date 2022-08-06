@@ -11,7 +11,7 @@ public interface FileMapper {
     @Select("select * from FILES")
     List<File> getFiles();
 
-    @Insert("insert into FILES(filename, contenttype, filesize,userid,filedata) values (#{filename}, #{contenttype}, #{filesize},#{userid},#{filedata})")
+    @Insert("insert into FILES(filename, contenttype, filesize,userid, filedata) values (#{fileName}, #{contentType}, #{fileSize},#{userId},#{filedata})")
     @Options(useGeneratedKeys = true, keyProperty = "fileId")
     int insertFile(File file);
 
@@ -20,14 +20,7 @@ public interface FileMapper {
 
     @Delete("delete from FILES where fileId = #{fileId}")
     int deleteFileWithString(String fileId);
-}
 
-//    CREATE TABLE IF NOT EXISTS FILES (
-//        fileId INT PRIMARY KEY auto_increment,
-//        filename VARCHAR,
-//        contenttype VARCHAR,
-//        filesize VARCHAR,
-//        userid INT,
-//        filedata BLOB,
-//        foreign key (userid) references USERS(userid)
-//        );
+    @Select("select * from FILES where fileId = #{fileId}")
+    File findFileById(String fileId);
+}

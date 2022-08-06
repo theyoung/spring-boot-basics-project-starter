@@ -28,4 +28,8 @@ public class FileService {
     public int deleteFile(String fileId) {
         return fileMapper.deleteFileWithString(fileId);
     }
+
+    public File findFileById(String fileId){
+        return fileMapper.findFileById(fileId);
+    }
 }

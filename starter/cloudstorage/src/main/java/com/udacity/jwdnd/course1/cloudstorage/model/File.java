@@ -6,7 +6,7 @@ public class File {
     String contentType;
     String fileSize;
     Integer userId;
-    byte[] blob;
+    byte[] filedata;
 
     public Integer getFileId() {
         return fileId;
@@ -48,11 +48,11 @@ public class File {
         this.userId = userId;
     }
 
-    public byte[] getBlob() {
-        return blob;
+    public byte[] getFiledata() {
+        return filedata;
     }
 
-    public void setBlob(byte[] blob) {
-        this.blob = blob;
+    public void setFiledata(byte[] source) {
+        this.filedata = source;
     }
 }
