@@ -35,7 +35,6 @@ public class HomeController {
             return "redirect:/logout";
         }
 
-
         model.addAttribute("notes", noteService.getNotes(user.getUserId()));
         model.addAttribute("credentials", credentialService.getCredentials(user.getUserId()));
         model.addAttribute("files", fileService.getFiles(user.getUserId()));

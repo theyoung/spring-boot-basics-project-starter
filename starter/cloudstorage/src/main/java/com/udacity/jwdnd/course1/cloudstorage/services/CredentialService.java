@@ -12,9 +12,11 @@ import java.util.List;
 public class CredentialService {
 
     public final CredentialMapper credentialMapper;
+    public final EncryptionService encryptionService;
 
-    public CredentialService(CredentialMapper credentialMapper) {
+    public CredentialService(CredentialMapper credentialMapper, EncryptionService encryptionService) {
         this.credentialMapper = credentialMapper;
+        this.encryptionService = encryptionService;
     }
 
     public int addCredential(Credential credential){
@@ -26,7 +28,18 @@ public class CredentialService {
     }
 
     public List<Credential> getCredentials(int userId){
-        return credentialMapper.getCredentials(userId);
+        List<Credential> list = credentialMapper.getCredentials(userId);
+        list.forEach(
+            credential -> {
+                credential.setDecryPassword(encryptionService.decryptValue(credential.getPassword(), credential.getKey()));
+            }
+        );
+
+        return list;
+    }
+
+    public Credential getCredential(Credential credential) {
+        return credentialMapper.getCredentialByCredential(credential);
     }
 
     public int deleteCredential(Credential credential) {

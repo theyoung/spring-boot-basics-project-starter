@@ -13,6 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
 import java.io.File;
+import java.util.List;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CloudStorageApplicationTests {
 
@@ -89,7 +91,18 @@ class CloudStorageApplicationTests {
 		Assertions.assertTrue(driver.findElement(By.id("success-msg")).getText().contains("You successfully signed up!"));
 	}
 
-	
+	private void doLogOut(){
+		driver.get("http://localhost:" + this.port + "/home");
+		WebDriverWait webDriverWait = new WebDriverWait((driver), 2);
+		WebElement logoutButton = driver.findElement(By.id("buttonLogout"));
+		logoutButton.click();
+		webDriverWait.until(ExpectedConditions.titleContains("Login"));
+
+	}
+
+	private void moveHome(){
+		driver.get("http://localhost:" + this.port + "/home");
+	}
 	
 	/**
 	 * PLEASE DO NOT DELETE THIS method.
@@ -201,5 +214,286 @@ class CloudStorageApplicationTests {
 	}
 
 
+
+
+
+
+	private void moveNoteTab(){
+		driver.get("http://localhost:" + this.port + "/home");
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-notes-tab")));
+		WebElement notetab = driver.findElement(By.id("nav-notes-tab"));
+		notetab.click();
+		String visible = notetab.getAttribute("aria-selected");
+		Assertions.assertEquals("true", visible);
+	}
+
+	private void createNote(String title, String description){
+		driver.get("http://localhost:" + this.port + "/home");
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+
+		moveNoteTab();
+
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("add-note")));
+		WebElement addNote = driver.findElement(By.id("add-note"));
+		addNote.click();
+
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-title")));
+		WebElement noteTitle = driver.findElement(By.id("note-title"));
+		noteTitle.sendKeys(title);
+
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-description")));
+		WebElement noteDescription = driver.findElement(By.id("note-description"));
+		noteDescription.sendKeys(description);
+
+		WebElement noteSubmit = driver.findElement(By.id("noteSubmitProxy"));
+		noteSubmit.click();
+
+		Assertions.assertTrue(driver.getPageSource().contains("Success"));
+	}
+
+	private void checkNoteInfo(String title, String description){
+		driver.get("http://localhost:" + this.port + "/home");
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+
+		moveNoteTab();
+
+		Assertions.assertTrue(driver.getPageSource().contains(title));
+		Assertions.assertTrue(driver.getPageSource().contains(description));
+	}
+
+	private void editNoteInfo(String addTitle, String addDesc){
+		driver.get("http://localhost:" + this.port + "/home");
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+
+		moveNoteTab();
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.name("note-edit")));
+		List<WebElement> list =  driver.findElements(By.name("note-edit"));
+
+		Assertions.assertTrue(0 < list.size());
+
+		WebElement element = list.get(0);
+		element.click();
+
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-title")));
+		WebElement noteTitle = driver.findElement(By.id("note-title"));
+		noteTitle.sendKeys(addTitle);
+
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("note-description")));
+		WebElement noteDescription = driver.findElement(By.id("note-description"));
+		noteDescription.sendKeys(addDesc);
+
+		WebElement noteSubmit = driver.findElement(By.id("noteSubmitProxy"));
+		noteSubmit.click();
+
+		Assertions.assertTrue(driver.getPageSource().contains("Success"));
+	}
+
+
+	private void deleteNote(){
+		driver.get("http://localhost:" + this.port + "/home");
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+
+		moveNoteTab();
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Delete")));
+		List<WebElement> list =  driver.findElements(By.linkText("Delete"));
+		int size = list.size();
+
+		Assertions.assertTrue(0 < list.size());
+
+		WebElement element = list.get(0);
+		element.click();
+
+		moveNoteTab();
+
+		list =  driver.findElements(By.name("Delete"));
+		Assertions.assertEquals(size-1,list.size());
+
+	}
+	private void moveCredentialsTab(){
+		driver.get("http://localhost:" + this.port + "/home");
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-credentials-tab")));
+		WebElement notetab = driver.findElement(By.id("nav-credentials-tab"));
+		notetab.click();
+		String visible = notetab.getAttribute("aria-selected");
+		Assertions.assertEquals("true", visible);
+	}
+
+	private void createCredentials(String url, String username, String password){
+		driver.get("http://localhost:" + this.port + "/home");
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+
+		moveCredentialsTab();
+
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("addCredential")));
+		WebElement addCredential = driver.findElement(By.id("addCredential"));
+		addCredential.click();
+
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-url")));
+		WebElement urlElem = driver.findElement(By.id("credential-url"));
+		urlElem.sendKeys(url);
+
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-username")));
+		WebElement usernameElem = driver.findElement(By.id("credential-username"));
+		usernameElem.sendKeys(username);
+
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-password")));
+		WebElement passElem = driver.findElement(By.id("credential-password"));
+		passElem.sendKeys(password);
+
+		WebElement submit = driver.findElement(By.id("cred-save"));
+		submit.click();
+
+		Assertions.assertTrue(driver.getPageSource().contains("Success"));
+	}
+
+	private void checkCredentialsInfo(String url, String username, String password){
+		driver.get("http://localhost:" + this.port + "/home");
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+
+		moveCredentialsTab();
+
+		Assertions.assertTrue(driver.getPageSource().contains(url));
+		Assertions.assertTrue(driver.getPageSource().contains(username));
+//		Assertions.assertTrue(driver.getPageSource().contains(password));
+	}
+
+	private void editCredentialsInfo(String url, String username, String password){
+		driver.get("http://localhost:" + this.port + "/home");
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+
+		moveCredentialsTab();
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.name("cred-edit")));
+		List<WebElement> list =  driver.findElements(By.name("cred-edit"));
+
+		Assertions.assertTrue(0 < list.size());
+
+		WebElement element = list.get(0);
+		element.click();
+
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-url")));
+		WebElement urlElem = driver.findElement(By.id("credential-url"));
+		urlElem.sendKeys(url);
+
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-username")));
+		WebElement usernameElem = driver.findElement(By.id("credential-username"));
+		usernameElem.sendKeys(username);
+
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("credential-password")));
+		WebElement passElem = driver.findElement(By.id("credential-password"));
+		passElem.sendKeys(password);
+
+		WebElement submit = driver.findElement(By.id("cred-save"));
+		submit.click();
+
+		Assertions.assertTrue(driver.getPageSource().contains("Success"));
+	}
+
+
+	private void deleteCredentials(){
+		driver.get("http://localhost:" + this.port + "/home");
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 2);
+
+		moveCredentialsTab();
+
+		webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Delete")));
+		List<WebElement> list =  driver.findElements(By.linkText("Delete"));
+		int size = list.size();
+
+		Assertions.assertTrue(0 < list.size());
+
+		WebElement element = list.get(0);
+		element.click();
+
+		moveNoteTab();
+
+		list =  driver.findElements(By.name("Delete"));
+		Assertions.assertEquals(size-1,list.size());
+
+	}
+
+	/*
+		Write a Selenium test that logs in an existing user, creates a credential and verifies that the credential details are visible in the credential list.
+
+		Write a Selenium test that logs in an existing user with existing credentials, clicks the edit credential button on an existing credential, changes the credential data, saves the changes, and verifies that the changes appear in the credential list.
+
+		Write a Selenium test that logs in an existing user with existing credentials, clicks the delete credential button on an existing credential, and verifies that the credential no longer appears in the credential list.
+     */
+	@Test
+	public void testAddEditDeleteCredential(){
+		String url = "https://www.naver.com";
+		String username = "theyoung";
+		String password = "1234";
+		String addStr = "a";
+
+		// sign in
+		doMockSignUp("Steven2", "na2", "stevenna2", "1");
+		doLogIn("stevenna2", "1");
+
+		//create credential
+		createCredentials(url, username, password);
+
+		//check credential
+		checkCredentialsInfo(url, username, password);
+
+		//edit credential
+		editCredentialsInfo(url+addStr, username+addStr, password+addStr);
+
+		//check credential
+		checkCredentialsInfo(url+addStr, username+addStr, password+addStr);
+
+		//delete credential
+		deleteCredentials();
+	}
+
+
+	/*
+		 Write a Selenium test that logs in an existing user, creates a note and verifies that the note details are visible in the note list.
+		 Write a Selenium test that logs in an existing user with existing notes, clicks the edit note button on an existing note, changes the note data, saves the changes, and verifies that the changes appear in the note list.
+		 Write a Selenium test that logs in an existing user with existing notes, clicks the delete note button on an existing note, and verifies that the note no longer appears in the note list.
+		 */
+	@Test
+	public void testAddEditDeleteNote(){
+		String title = "Note Test Title";
+		String desc = "Note Test Description";
+		String addTitle = "added Title";
+		String addDesc = "added Desc";
+
+		// sign in
+		doMockSignUp("Steven1", "na1", "stevenna1", "1");
+		doLogIn("stevenna1", "1");
+
+		//create note
+		createNote(title, desc);
+
+		//check note
+		checkNoteInfo(title, desc);
+
+		//edit note
+		editNoteInfo(addTitle, addDesc);
+
+		//check note
+		checkNoteInfo((title + addTitle).substring(0,20), desc + addDesc);
+
+		//delete note
+		deleteNote();
+	}
+
+	/**
+	 * Write a Selenium test that verifies that the home page is not accessible without logging in.
+	 *
+	 * Write a Selenium test that signs up a new user, logs that user in, verifies that they can access the home page, then logs out and verifies that the home page is no longer accessible.
+	 */
+	@Test
+	public void testSignupAndLoginFlow(){
+		doMockSignUp("Steven", "na", "stevenna", "1");
+		doLogIn("stevenna", "1");
+		doLogOut();
+		moveHome();
+		Assertions.assertEquals("http://localhost:" + this.port + "/login", driver.getCurrentUrl());
+	}
 
 }

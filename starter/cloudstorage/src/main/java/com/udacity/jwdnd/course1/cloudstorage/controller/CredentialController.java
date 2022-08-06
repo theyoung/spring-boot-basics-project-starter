@@ -4,6 +4,7 @@ import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
 import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.services.CredentialService;
+import com.udacity.jwdnd.course1.cloudstorage.services.EncryptionService;
 import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
 import com.udacity.jwdnd.course1.cloudstorage.services.UserService;
 import org.springframework.security.core.Authentication;
@@ -13,13 +14,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.nio.charset.Charset;
+import java.security.SecureRandom;
+
 @Controller
 public class CredentialController {
 
+    public final EncryptionService encryptionService;
     public final UserService userService;
     public final CredentialService credentialService;
 
-    public CredentialController(UserService userService, CredentialService credentialService) {
+    public CredentialController(EncryptionService encryptionService, UserService userService, CredentialService credentialService) {
+        this.encryptionService = encryptionService;
         this.userService = userService;
         this.credentialService = credentialService;
     }
@@ -53,9 +59,16 @@ public class CredentialController {
         }
 
         if(credential.getCredentialId() == null){
+            credential.setKey(encryptionService.getRandomKey());
+            credential.setPassword(encryptionService.encryptValue(credential.getPassword(), credential.getKey()));
+
             result = credentialService.addCredential(credential);
         } else {
-            result = credentialService.updateCredential(credential);
+            Credential dbCreate = credentialService.getCredential(credential);
+            dbCreate.setPassword(encryptionService.encryptValue(credential.getPassword(), dbCreate.getKey()));
+            dbCreate.setUserName(credential.getUserName());
+            dbCreate.setUrl(credential.getUrl());
+            result = credentialService.updateCredential(dbCreate);
         }
 
         if(result != 0){
@@ -66,5 +79,7 @@ public class CredentialController {
 
         return "result";
     }
+
+
 
 }

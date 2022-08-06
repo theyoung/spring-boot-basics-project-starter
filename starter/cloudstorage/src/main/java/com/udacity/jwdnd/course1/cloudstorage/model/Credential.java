@@ -7,7 +7,29 @@ public class Credential {
     String userName;
     String key;
     String password;
+
+    String decryPassword;
     Integer userId;
+
+    public String getDecryPassword() {
+        return decryPassword;
+    }
+
+    public void setDecryPassword(String encryPassword) {
+        this.decryPassword = encryPassword;
+    }
+
+    public Credential(){
+
+    }
+    public Credential(Integer credentialId, String url, String userName, String key, String password, Integer userId) {
+        this.credentialId = credentialId;
+        this.url = url;
+        this.userName = userName;
+        this.key = key;
+        this.password = password;
+        this.userId = userId;
+    }
 
     public Integer getCredentialId() {
         return credentialId;
